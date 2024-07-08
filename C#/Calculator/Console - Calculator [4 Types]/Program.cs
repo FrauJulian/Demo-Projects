@@ -1,87 +1,74 @@
-﻿namespace DemoProject
+﻿using Enums;
+
+namespace ConsoleCalculator
 {
     class Program
     {
-        enum CalculationTypes
-        {
-            Addidieren,
-            Subtrahieren,
-            Multiplizieren,
-            Dividieren
-        }
-
-        enum AgainYN
-        {
-            Ja,
-            Nein
-        }
-
         static void Main()
         {
             Calculator();
-
         }
 
-        static void Calculator()
+        private static void Calculator()
         {
-            double result;
+            decimal result;
 
-            var types = Enum.GetNames(typeof(CalculationTypes));
-            int pos = DropdownFunc(types, false);
+            string[] type = Enum.GetNames(typeof(CalculationType));
+            int position = DropdownFunction(type, false);
 
             Console.WriteLine("Gib die erste Zahl deiner Rechnung an:");
-            double Num1 = NumValidation();
+            decimal num1 = NumberValidation();
             Console.Clear();
 
             Console.WriteLine("Gib die zweite Zahl deiner Rechnung an:");
-            double Num2 = NumValidation();
+            decimal num2 = NumberValidation();
             Console.Clear();
 
-            switch (pos)
+            switch (position)
             {
                 case 0:
-                    result = Num1 + Num2;
-                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + Num1 + " + " + Num2 + ", ist: " + result);
+                    result = num1 + num2;
+                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + num1 + " + " + num2 + ", ist: " + result);
                     CalculateAgain();
                     break;
                 case 1:
-                    result = Num1 - Num2;
-                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + Num1 + " - " + Num2 + ", ist: " + result);
+                    result = num1 - num2;
+                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + num1 + " - " + num2 + ", ist: " + result);
                     CalculateAgain();
                     break;
                 case 2:
-                    result = Num1 * Num2;
-                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + Num1 + " * " + Num2 + ", ist: " + result);
+                    result = num1 * num2;
+                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + num1 + " * " + num2 + ", ist: " + result);
                     CalculateAgain();
                     break;
                 case 3:
-                    result = Num1 / Num2;
-                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + Num1 + " / " + Num2 + ", ist: " + result);
+                    result = num1 / num2;
+                    Console.WriteLine("Das Ergebniss deiner Rechnung, " + num1 + " / " + num2 + ", ist: " + result);
                     CalculateAgain();
                     break;
             }
         }
 
-        private static double NumValidation()
+        private static decimal NumberValidation()
         {
-            double Number;
+            decimal number;
 
-            while (!double.TryParse(Console.ReadLine(), out Number))
+            while (!decimal.TryParse(Console.ReadLine(), out number))
             {
                 Console.WriteLine("Deine Eingabe ist ungültig, bitte gib eine Zahl an!");
             }
 
-            return Number;
+            return number;
         }
 
         private static void CalculateAgain()
         {
             Console.ReadLine();
 
-            var types = Enum.GetNames(typeof(AgainYN));
-            int pos = DropdownFunc(types, true);
+            var type = Enum.GetNames(typeof(AgainAnswers));
+            int position = DropdownFunction(type, true);
 
-            if (pos == 0)
+            if (position == 0)
             {
                 Calculator();
             }
@@ -91,9 +78,9 @@
             }
         }
 
-        private static int DropdownFunc(string[] Options, bool again)
+        private static int DropdownFunction(string[] options, bool again)
         {
-            int OptionPosition = 0;
+            int option = 0;
             bool menuOpen = true;
 
             while (menuOpen)
@@ -110,9 +97,9 @@
                 }
 
 
-                for (int i = 0; i < Options.Length; i++)
+                for (int i = 0; i < options.Length; i++)
                 {
-                    if (i == OptionPosition)
+                    if (i == option)
                     {
                         Console.BackgroundColor = ConsoleColor.Gray;
                         Console.ForegroundColor = ConsoleColor.Black;
@@ -122,7 +109,7 @@
                         Console.ResetColor();
                     }
 
-                    Console.WriteLine($" {Options[i]} ");
+                    Console.WriteLine($" {options[i]} ");
                     Console.ResetColor();
                 }
 
@@ -131,15 +118,15 @@
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        OptionPosition = Math.Max(0, OptionPosition - 1);
+                        option = Math.Max(0, option - 1);
                         break;
                     case ConsoleKey.DownArrow:
-                        OptionPosition = Math.Min(Options.Length - 1, OptionPosition + 1);
+                        option = Math.Min(options.Length - 1, option + 1);
                         break;
                     case ConsoleKey.Enter:
                         menuOpen = false;
                         Console.Clear();
-                        return OptionPosition;
+                        return option;
                 }
 
             }
