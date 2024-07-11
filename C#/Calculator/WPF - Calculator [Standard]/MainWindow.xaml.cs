@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +11,7 @@ namespace WPF___Calculator__Standard_
  
     public partial class MainWindow : Window
     {
-        private string _operation = "";
+        private string _operation = String.Empty;
         private bool _equalsPressed = false;
 
         public MainWindow()
@@ -27,49 +27,98 @@ namespace WPF___Calculator__Standard_
                 
                 string tmpOperation = _operation + button.Content;
 
-                if (ValidNumber(Convert.ToString(button.Content)))
+                if (ValidationCheck(tmpOperation, _operation))
                 {
                     _operation = resultTextBox.Text + button.Content;
-                    resultTextBox.Text = Convert.ToString(_operation);
+                    resultTextBox.Text = _operation;
                 }
             }
         }
 
         private void EqualsClick(object sender, RoutedEventArgs e)
         {
-            if (!_equalsPressed &&
-                _operation != "")
+            try
             {
-                decimal result = Calculator(_operation);
-                resultTextBox.Text = resultTextBox.Text + " = " + result;
-                _equalsPressed = true;
+                if (!_equalsPressed &&
+                    _operation != String.Empty &&
+                    !_operation.EndsWith('+') &&
+                    !_operation.EndsWith('-') &&
+                    !_operation.EndsWith('*') &&
+                    !_operation.EndsWith('/'))
+                {
+                    string result = Calculator(_operation);
+                    resultTextBox.Text = resultTextBox.Text + " = " + result;
+                    _equalsPressed = true;
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Ungültige Rechnung!\n\n"+ ex.ToString());
             }
         }
 
         private void ClearClick(object sender, RoutedEventArgs e)
         {
-            resultTextBox.Text = "";
-            _operation = "";
+            resultTextBox.Text = String.Empty;
+            _operation = String.Empty;
             _equalsPressed = false;
         }
 
-        private static decimal Calculator(string operation)
+        private static string Calculator(string operation)
         {
             DataTable dataTable = new DataTable();
-            object result = dataTable.Compute(operation, null);
-            return Convert.ToDecimal(result);
+            object resultObj = dataTable.Compute(operation, null);
+
+            double result = Convert.ToDouble(resultObj);
+
+            if (Double.IsNaN(result) || Double.IsInfinity(result))
+            {
+                return "ERR";
+            }
+
+            result = Math.Round(result, 2);
+
+            return result.ToString("G", new System.Globalization.CultureInfo("en-US"));
+        }
+        
+        private static bool ValidationCheck(string tmpOperation, string operation)
+        {
+            string numberPattern = @"-?\d+(\.\d{0,3})?";
+            string operatorPattern = @"[\+\-\*/]";
+            string combinedPattern = $@"^({numberPattern}|{operatorPattern})+$";
+            string pointCalcTypeRow = @"(\.\.|\+\+|--|\*\*|//)";
+            string symbolsRow = @"(\.\+|\+\.|\-\+|\+\-|\*\+|\+\*|\/\+|\+\/|\.\-|\-\.)";
+            string calcTypeRow = @"[\+\-\*/]{2,}";
+
+
+            if (string.IsNullOrEmpty(operation))
+            {
+                return Regex.IsMatch(tmpOperation, numberPattern) || tmpOperation == "-";
+            }
+            else if (!Regex.IsMatch(tmpOperation, combinedPattern))
+            {
+                return false;
+            }
+            else if (Regex.IsMatch(tmpOperation, pointCalcTypeRow))
+            {
+                return false; 
+            }
+            else if (Regex.IsMatch(tmpOperation, symbolsRow))
+            {
+                return false; 
+            }
+            else if (Regex.IsMatch(tmpOperation, calcTypeRow))
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        private static bool ValidNumber(string tmpOperation)
+        private void MenuButton(object sender, RoutedEventArgs e)
         {
-            string regexPattern = @"^(\-)?(\d{1,6})?(\.{0,1})?(\d{1,3})?";
-            return Regex.IsMatch(tmpOperation, regexPattern);
-        }
-
-        private static bool ValidCalcType(string tmpOperation)
-        {
-            string regexPattern = @"^(\-)?(\d)?(\.)?(\d{1,3})*([+|\-|*|\/])?((\d)?(\.)?(\d{1,3})*)*";
-            return Regex.IsMatch(tmpOperation, regexPattern);
+            OldCalculator twoNumCalc = new OldCalculator();
+            twoNumCalc.Show();
+            this.Close();
         }
     }
 }

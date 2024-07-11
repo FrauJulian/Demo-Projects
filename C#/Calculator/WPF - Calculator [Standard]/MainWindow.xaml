@@ -81,7 +81,7 @@
             Grid.ColumnSpan="3"
             Margin="3,10,10,10">
                 
-                Calculator
+                Calculator v2
         </TextBlock>
 
         <!-- NAV. BAR ICON -->
@@ -89,11 +89,12 @@
             Grid.Column="4" 
             Grid.Row="1" 
             Background="Transparent" 
-            FontSize="30">
-            
+            FontSize="30"
+            Click="MenuButton">
+
             ☰
         </Button>
-        
+
         <!-- ACTION BAR -->
         <TextBlock
             Grid.Column="1"
@@ -136,7 +137,7 @@
             Grid.Column="4"
             Grid.Row="9"
             Click="ButtonClick">
-            
+
             /
         </Button>
 
@@ -167,7 +168,7 @@
             Grid.Row="9"
             Click="ButtonClick">
 
-            ,
+            .
         </Button>
 
         <!-- MIDDLE LEFT -->
