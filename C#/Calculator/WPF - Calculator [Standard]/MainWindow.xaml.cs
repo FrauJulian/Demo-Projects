@@ -113,12 +113,5 @@ namespace WPF___Calculator__Standard_
 
             return true;
         }
-
-        private void MenuButton(object sender, RoutedEventArgs e)
-        {
-            OldCalculator twoNumCalc = new OldCalculator();
-            twoNumCalc.Show();
-            this.Close();
-        }
     }
 }
