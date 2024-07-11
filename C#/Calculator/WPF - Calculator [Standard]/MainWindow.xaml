@@ -81,7 +81,7 @@
             Grid.ColumnSpan="3"
             Margin="3,10,10,10">
                 
-                Calculator v2
+                Calculator
         </TextBlock>
 
         <!-- NAV. BAR ICON -->
