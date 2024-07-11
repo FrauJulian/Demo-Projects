@@ -1,9 +1,9 @@
-﻿using System.Data;
+using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WPF___Calculator__Standard_
+namespace WPF___combined__Calculator_
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -29,8 +29,8 @@ namespace WPF___Calculator__Standard_
 
                 if (ValidationCheck(tmpOperation, _operation))
                 {
-                    _operation = resultTextBox.Text + button.Content;
-                    resultTextBox.Text = _operation;
+                    _operation = ResultTextBox.Text + button.Content;
+                    ResultTextBox.Text = _operation;
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace WPF___Calculator__Standard_
                     !_operation.EndsWith('/'))
                 {
                     string result = Calculator(_operation);
-                    resultTextBox.Text = resultTextBox.Text + " = " + result;
+                    ResultTextBox.Text = ResultTextBox.Text + " = " + result;
                     _equalsPressed = true;
                 }
             } catch (Exception ex)
@@ -58,7 +58,7 @@ namespace WPF___Calculator__Standard_
 
         private void ClearClick(object sender, RoutedEventArgs e)
         {
-            resultTextBox.Text = String.Empty;
+            ResultTextBox.Text = String.Empty;
             _operation = String.Empty;
             _equalsPressed = false;
         }
@@ -70,7 +70,12 @@ namespace WPF___Calculator__Standard_
 
             double result = Convert.ToDouble(resultObj);
 
-            if (Double.IsNaN(result) || Double.IsInfinity(result))
+            if (Double.IsNaN(result) ||
+                Double.IsInfinity(result) ||
+                operation.StartsWith("0.0") ||
+                operation.StartsWith("-0.0") ||
+                operation.EndsWith("0.0") ||
+                operation.EndsWith("-0.0"))
             {
                 return "ERR";
             }
